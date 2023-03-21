@@ -3,9 +3,8 @@
 # The 6.0001 Word Game
 # Created by: Kevin Luu <luuk> and Jenna Wiens <jwiens>
 #
-# Name          : <your name>
-# Collaborators : <your collaborators>
-# Time spent    : <total time>
+# Name          : Breno
+# Time spent    : around 7hours
 
 import math
 import random
@@ -26,8 +25,7 @@ SCRABBLE_LETTER_VALUES = {
 WORDLIST_FILENAME = "words.txt"
 
 def load_words():
-    
-    
+      
     print("Loading word list from file...")
     # inFile: file
     inFile = open(WORDLIST_FILENAME, 'r')
@@ -89,7 +87,6 @@ def deal_hand(n):
 
 
 def update_hand(hand, word):
-
     new_hand = hand.copy()
     
     for letter in word.lower():
@@ -100,11 +97,9 @@ def update_hand(hand, word):
 
 
 def is_valid_word(word, hand, word_list):
-        
-  
     new_hand = hand.copy()
     word_low = word.lower()
-    
+    #wildcard check
     if "*" in word_low:
         wildcard_matches = 0
         for vowel in VOWELS:
@@ -128,7 +123,7 @@ def is_valid_word(word, hand, word_list):
             
             return True
     
-    # is in word list 
+    # is in word list check
     else:
         if word_low in word_list:
             for letter in word_low:
@@ -148,9 +143,7 @@ def is_valid_word(word, hand, word_list):
  
 
 def calculate_handlen(hand):
-    
     # saw on the internet: return sum(list(hand.values()))
-    
     hand_length = 0
     for key in hand:
         hand_length += hand[key]
@@ -162,10 +155,11 @@ def play_hand(hand, word_list):
     current_score = 0
     hand_length = calculate_handlen(hand)
     playing_hand = hand.copy()
-    
+    # game is only played while you have cards in your hand
     while hand_length > 0:
-        display_hand(playing_hand)
+        display_hand(playing_hand)#show the hand to the player
         word = input("Enter word, or \"!!\" to indicate that you are finished: ")
+	#Allow the player to quit the hand early
         if word == "!!":
             print("\n")
             break
@@ -173,11 +167,11 @@ def play_hand(hand, word_list):
             print("\n")
             if is_valid_word(word, playing_hand, word_list):
                 word_score = get_word_score(word, calculate_handlen(playing_hand))
-                current_score += word_score 
+                current_score += word_score #remove the letter of a valid word and five the player it's points
                 print(f"{word} earned {word_score} points. Total: {current_score}")
             else:
                 print("That is not a valid word. Please choose another word")
-            playing_hand = update_hand(hand, word)
+            playing_hand = update_hand(hand, word)# remove the letters from an unvalid word
         hand_length = calculate_handlen(playing_hand)
             
     print("You ran out of letters")
@@ -188,13 +182,13 @@ def play_hand(hand, word_list):
 
 def substitute_hand(hand, letter):    
     new_hand = hand.copy()
-    
+    #check if the hand has the letter hte player wants to change
     if letter.lower not in list(new_hand.keys()):
         return hand
     
     else:
-        alphabet = VOWELS + CONSONANTS
-        while True:
+        alphabet = VOWELS + CONSONANTS# "*" is in alphabet but will never be given to the player, as the letter alredy exist in the player's hand
+        while True:#while loop that will search for a correct letter to replace
             new_letter = random.choice(alphabet)
             if new_letter not in list(new_hand.keys()):
                 new_hand[new_letter] = new_hand[letter]
@@ -206,14 +200,15 @@ def substitute_hand(hand, letter):
        
     
 def play_game(word_list):
-        
+    #gets the player input on how many hands he wants to play    
     total_score = 0
     hands_to_play = int(input("How many hands do you want to play? "))
     
     print("\n")
-    while hands_to_play > 0:
+    while hands_to_play > 0:#while loop that will play until all the hands are played
         current_hand = deal_hand(HAND_SIZE)
         display_hand(current_hand)
+	#allow the player to make a sub
         if input("Would you like to substitute a letter?(yes / no)").lower() == "yes":
             print("\n")
             letter_to_replace = input("Which letter would you like to replace: ")
@@ -221,8 +216,10 @@ def play_game(word_list):
         first_round_score = play_hand(current_hand, word_list)
         current_score = first_round_score
         print("----------")
+	#allow the player to replay the hand
         if input("Would you like to replay the hand?").lower() == "yes":
             second_round_score = play_hand(current_hand, word_list)
+	#passes on only the highest value
             current_score = max(first_round_score, second_round_score)
         total_score += current_score
         hands_to_play -= 1
