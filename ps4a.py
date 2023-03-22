@@ -1,7 +1,7 @@
 # Problem Set 4A
 # Name: Breno
 # Collaborators:
-# Time Spent: x:xx
+# Time Spent: 1 day
 
 def get_permutations(sequence):
     '''
@@ -23,7 +23,7 @@ def get_permutations(sequence):
     a different order than what is listed here.
     '''
 
-    #recursion must be used
+    
     #smallest version
     if len(sequence) <= 1:
         return [sequence]
