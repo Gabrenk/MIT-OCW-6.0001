@@ -266,8 +266,9 @@ class CiphertextMessage(Message):
                
         ciphered_messages ={}
         #for every message, try all possible shifts
-        #Try all the 52 possible combinations:{-26<=shift>0<shift>=0}
-        for shift_value in range (-26, 26):
+        #Try all the 26 possible combinations:{-26<=shift>0<shift>=0}
+        #since different shifts can get to the same result ex: shift = 2 == shift = 24
+        for shift_value in range (26):
             shifted_message = self.apply_shift(shift_value)
             valid_words = []
             #since spaces were not translated, usem them as ways to
@@ -299,14 +300,14 @@ if __name__ == '__main__':
     print('Expected Output:', (24, 'hello'))
     print('Actual Output:', ciphertext.decrypt_message())
     print('--------------------')
+    
     #TODO: WRITE YOUR TEST CASES HERE
     #Example test case (PlaintextMessage)
-    plaintext = PlaintextMessage('hello', -2)
+    plaintext = PlaintextMessage('hello', -24)
     print('Expected Output: jgnnq')
     print('Actual Output:', plaintext.get_message_text_encrypted())
     print('--------------------')
     
-
     #TODO: best shift value and unencrypted story
     story = get_story_string()
     print("Encrypted Story:")
